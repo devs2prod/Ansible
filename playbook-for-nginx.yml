@@ -1,0 +1,31 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install the nginx
+      ansible.builtin.apt: 
+        name: nginx
+        state: present
+        
+    - name: Start the Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+    - name: Delete the Default index file
+      file:
+        path: /var/www/html/index.nginx-debian.html 
+        state: absent
+
+
+    - name: Copy the File to the Nginx
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: abhishekyogi
+        mode: '777'
+
+    - name: Restarted the Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
